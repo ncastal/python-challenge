@@ -16,17 +16,23 @@ with open(budget_csv, newline="") as csvfile: #reading budget_data.csv
     total = 0 #variable to give a sum of all profits and losses
     greatest_increase=0 #varaible used to find the greatest increase in profits
     greatest_decrease=0 #variable used to find the greatest decrease in profits
+    diff=0 #diff variables used to calcultate average change in profits and greatest increase and decrease
+    difftotal=0
+    currentprofit=0
     for row in csvreader:
         month=month+1 #finding the total amount of months
         total=total+int(row[1]) #finding the sum of all profits and losses
-        if int(row[1]) > greatest_increase: #if statements to find greatest increases and decreases
-            greatest_increase=int(row[1])
+        if month != 1: #skips first month
+            diff=int(row[1])-currentprofit #calculates difference in profits between months
+            difftotal=difftotal+diff
+        if diff > greatest_increase: #if statements to find greatest increases and decreases
+            greatest_increase=diff
             greatest_increase_month=row[0]
-        if int(row[1])<greatest_decrease:
-            greatest_decrease=int(row[1])
+        if diff<greatest_decrease:
+            greatest_decrease=diff
             greatest_decrease_month=row[0]
-    avg=round(total/month,2) #calcuating the average and rounding it to two decimals
-
+        currentprofit=int(row[1])#sets current profit for last month to be used for next month in loop
+    avg=round(difftotal/(month-1),2)  #calcuating the average and rounding it to two decimals
     print(f"Total months : {month}") #printing the results
     print(f"Total: ${total}")
     print(f"Average Change: ${avg}")
